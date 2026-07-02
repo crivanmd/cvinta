@@ -63,14 +63,14 @@ function CVMockup({ compact = false }: { compact?: boolean }) {
         <span>Listo para ATS</span>
       </div>
       <div className="cv-mock__head">
-        <div className="cv-mock__name">Juan Pérez</div>
+        <div className="cv-mock__name">Alex Smith</div>
         <div className="cv-mock__role">Analista Financiero</div>
         <div className="cv-mock__contact">
-          <span>juan@email.com</span>
+          <span>alex@email.com</span>
           <span className="dot" />
           <span>+54 9 261 1234567</span>
           <span className="dot" />
-          <span>linkedin.com/in/juanperez</span>
+          <span>linkedin.com/in/alexsmith</span>
         </div>
       </div>
       <div className="cv-mock__section">
@@ -133,7 +133,7 @@ export default function CvintaLanding() {
         <div className="container navbar__inner">
           <div className="logo">
             <Logo size={26} />
-            Cvinta
+            CVinta
           </div>
           <div className="hidden md:flex items-center gap-2">
             <a href="#como-funciona" className="btn btn-ghost">
@@ -268,7 +268,7 @@ export default function CvintaLanding() {
         <div className="container footer__inner">
           <div className="footer__logo">
             <Logo size={22} />
-            <span className="brand-line">Cvinta</span>
+            <span className="brand-line">CVinta</span>
           </div>
           <p>Un currículum simple, para cualquier persona, en cualquier trabajo.</p>
           <p>Siempre existirá una versión gratuita.</p>

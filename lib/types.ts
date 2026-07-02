@@ -14,6 +14,7 @@ export type Experiencia = {
   cargo: string;
   inicio: string;
   fin: string;
+  actual: boolean;
   descripcion: string;
 };
 
@@ -23,6 +24,7 @@ export type Educacion = {
   titulo: string;
   inicio: string;
   fin: string;
+  actual: boolean;
 };
 
 export type Idioma = {

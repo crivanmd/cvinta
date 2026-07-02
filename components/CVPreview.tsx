@@ -1,4 +1,5 @@
 import { CVData } from "@/lib/types";
+import { formatMesAnio } from "@/lib/format";
 
 export default function CVPreview({
   data,
@@ -55,9 +56,9 @@ export default function CVPreview({
               <div className="cv-exp-item" key={e.id}>
                 <div className="cv-exp-item__top">
                   <span className="cv-exp-item__role">{e.cargo || "Cargo"}</span>
-                  {(e.inicio || e.fin) && (
+                  {(e.inicio || e.fin || e.actual) && (
                     <span className="cv-exp-item__dates">
-                      {e.inicio} — {e.fin || "Actualidad"}
+                      {formatMesAnio(e.inicio)} — {e.actual ? "Actualidad" : formatMesAnio(e.fin)}
                     </span>
                   )}
                 </div>
@@ -83,9 +84,9 @@ export default function CVPreview({
                   <div style={{ fontWeight: 700, fontSize: 13 }}>{e.titulo || "Título"}</div>
                   <div style={{ fontSize: 12, color: "#55605A" }}>{e.institucion}</div>
                 </div>
-                {(e.inicio || e.fin) && (
+                {(e.inicio || e.fin || e.actual) && (
                   <div className="cv-exp-item__dates">
-                    {e.inicio} — {e.fin}
+                    {formatMesAnio(e.inicio)} — {e.actual ? "Actualidad" : formatMesAnio(e.fin)}
                   </div>
                 )}
               </div>

@@ -1,4 +1,4 @@
-# Cvinta
+# CVinta
 
 Currículums simples y gratuitos, para cualquier persona, sin registro.
 

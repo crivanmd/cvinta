@@ -15,7 +15,7 @@ const body = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Cvinta — Creá tu currículum gratis",
+  title: "CVinta — Creá tu currículum gratis",
   description:
     "¿Necesitas un currículum ya? Hazlo gratis, en minutos. Sin registrarte, sin complicaciones.",
 };

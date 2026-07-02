@@ -60,12 +60,14 @@ function Section({
 
 function Field({
   label,
+  error,
   ...props
-}: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+}: { label: string; error?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label className="field">
       <span className="field__label">{label}</span>
       <input className="field__input" {...props} />
+      {error && <span className="ai-error" style={{ marginTop: 0 }}>{error}</span>}
     </label>
   );
 }
@@ -77,6 +79,7 @@ export default function CrearCurriculum() {
   const [mobileTab, setMobileTab] = useState<"editar" | "preview">("editar");
   const previewRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
+  const [emailTouched, setEmailTouched] = useState(false);
 
   const [personal, setPersonal] = useState({
     nombre: "",
@@ -93,11 +96,11 @@ export default function CrearCurriculum() {
   const [perfilError, setPerfilError] = useState("");
 
   const [experiencias, setExperiencias] = useState([
-    { id: 0, empresa: "", cargo: "", inicio: "", fin: "", descripcion: "", enhancing: false, error: "" },
+    { id: 0, empresa: "", cargo: "", inicio: "", fin: "", actual: false, descripcion: "", enhancing: false, error: "" },
   ]);
 
   const [educacion, setEducacion] = useState([
-    { id: 0, institucion: "", titulo: "", inicio: "", fin: "" },
+    { id: 0, institucion: "", titulo: "", inicio: "", fin: "", actual: false },
   ]);
 
   const [skills, setSkills] = useState<string[]>([]);
@@ -109,11 +112,19 @@ export default function CrearCurriculum() {
   const addExperiencia = () =>
     setExperiencias((xs) => [
       ...xs,
-      { id: nextId(), empresa: "", cargo: "", inicio: "", fin: "", descripcion: "", enhancing: false, error: "" },
+      { id: nextId(), empresa: "", cargo: "", inicio: "", fin: "", actual: false, descripcion: "", enhancing: false, error: "" },
     ]);
   const removeExperiencia = (id: number) => setExperiencias((xs) => xs.filter((x) => x.id !== id));
   const updateExperiencia = (id: number, field: string, value: string | boolean) =>
-    setExperiencias((xs) => xs.map((x) => (x.id === id ? { ...x, [field]: value } : x)));
+    setExperiencias((xs) =>
+      xs.map((x) => {
+        if (x.id !== id) return x;
+        const updated = { ...x, [field]: value };
+        // Si marca "actual", limpiamos la fecha de fin para no mostrar las dos cosas
+        if (field === "actual" && value === true) updated.fin = "";
+        return updated;
+      })
+    );
 
   const mejorarExperiencia = async (id: number) => {
     const exp = experiencias.find((x) => x.id === id);
@@ -131,10 +142,17 @@ export default function CrearCurriculum() {
   };
 
   const addEducacion = () =>
-    setEducacion((xs) => [...xs, { id: nextId(), institucion: "", titulo: "", inicio: "", fin: "" }]);
+    setEducacion((xs) => [...xs, { id: nextId(), institucion: "", titulo: "", inicio: "", fin: "", actual: false }]);
   const removeEducacion = (id: number) => setEducacion((xs) => xs.filter((x) => x.id !== id));
-  const updateEducacion = (id: number, field: string, value: string) =>
-    setEducacion((xs) => xs.map((x) => (x.id === id ? { ...x, [field]: value } : x)));
+  const updateEducacion = (id: number, field: string, value: string | boolean) =>
+    setEducacion((xs) =>
+      xs.map((x) => {
+        if (x.id !== id) return x;
+        const updated = { ...x, [field]: value };
+        if (field === "actual" && value === true) updated.fin = "";
+        return updated;
+      })
+    );
 
   const addSkill = (raw: string) => {
     const value = raw.trim();
@@ -211,7 +229,7 @@ export default function CrearCurriculum() {
           <div className="form-header">
             <Link href="/" className="logo mb-4" style={{ textDecoration: "none", color: "inherit" }}>
               <Logo size={22} />
-              Cvinta
+              CVinta
             </Link>
             <h1>Completa tu currículum</h1>
             <p>La vista previa se actualiza en tiempo real, a la derecha.</p>
@@ -223,44 +241,57 @@ export default function CrearCurriculum() {
                 label="Nombre completo"
                 value={personal.nombre}
                 onChange={(e) => setPersonal({ ...personal, nombre: e.target.value })}
-                placeholder="Juan Pérez"
+                placeholder="Alex Smith"
+                maxLength={80}
               />
               <Field
                 label="Correo electrónico"
                 type="email"
                 value={personal.email}
                 onChange={(e) => setPersonal({ ...personal, email: e.target.value })}
-                placeholder="juan@email.com"
+                onBlur={() => setEmailTouched(true)}
+                placeholder="alex@email.com"
+                maxLength={100}
+                error={
+                  emailTouched && personal.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personal.email)
+                    ? "Revisá el formato del correo."
+                    : undefined
+                }
               />
               <Field
                 label="Teléfono"
                 value={personal.telefono}
                 onChange={(e) => setPersonal({ ...personal, telefono: e.target.value })}
                 placeholder="+54 9 261 1234567"
+                maxLength={25}
               />
               <Field
                 label="Ciudad"
                 value={personal.ciudad}
                 onChange={(e) => setPersonal({ ...personal, ciudad: e.target.value })}
                 placeholder="Mendoza"
+                maxLength={50}
               />
               <Field
                 label="País"
                 value={personal.pais}
                 onChange={(e) => setPersonal({ ...personal, pais: e.target.value })}
                 placeholder="Argentina"
+                maxLength={50}
               />
               <Field
                 label="LinkedIn"
                 value={personal.linkedin}
                 onChange={(e) => setPersonal({ ...personal, linkedin: e.target.value })}
-                placeholder="linkedin.com/in/juanperez"
+                placeholder="linkedin.com/in/alexsmith"
+                maxLength={100}
               />
               <Field
                 label="Sitio web (opcional)"
                 value={personal.web}
                 onChange={(e) => setPersonal({ ...personal, web: e.target.value })}
-                placeholder="juanperez.com"
+                placeholder="alexsmith.com"
+                maxLength={100}
               />
             </div>
           </Section>
@@ -282,9 +313,13 @@ export default function CrearCurriculum() {
             <textarea
               className="field__textarea"
               value={perfil}
-              onChange={(e) => setPerfil(e.target.value)}
+              onChange={(e) => setPerfil(e.target.value.slice(0, 500))}
+              maxLength={500}
               placeholder="Analista financiero con experiencia en control de gestión, análisis de costos y elaboración de reportes."
             />
+            <div className="field-hint" style={{ textAlign: "right" }}>
+              {perfil.length}/500
+            </div>
             {perfilError && <div className="ai-error">{perfilError}</div>}
           </Section>
 
@@ -309,25 +344,51 @@ export default function CrearCurriculum() {
                     value={exp.empresa}
                     onChange={(e) => updateExperiencia(exp.id, "empresa", e.target.value)}
                     placeholder="Empresa ABC"
+                    maxLength={80}
                   />
                   <Field
                     label="Cargo"
                     value={exp.cargo}
                     onChange={(e) => updateExperiencia(exp.id, "cargo", e.target.value)}
                     placeholder="Analista Financiero"
+                    maxLength={80}
                   />
                   <Field
                     label="Fecha inicio"
+                    type="month"
                     value={exp.inicio}
                     onChange={(e) => updateExperiencia(exp.id, "inicio", e.target.value)}
-                    placeholder="2022"
+                    max={new Date().toISOString().slice(0, 7)}
                   />
-                  <Field
-                    label="Fecha fin"
-                    value={exp.fin}
-                    onChange={(e) => updateExperiencia(exp.id, "fin", e.target.value)}
-                    placeholder="Actualidad"
-                  />
+                  <div className="field">
+                    <span className="field__label">Fecha fin</span>
+                    <input
+                      className="field__input"
+                      type="month"
+                      value={exp.fin}
+                      onChange={(e) => updateExperiencia(exp.id, "fin", e.target.value)}
+                      disabled={exp.actual}
+                      max={new Date().toISOString().slice(0, 7)}
+                    />
+                    <label
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        marginTop: 6,
+                        fontSize: 12.5,
+                        color: "var(--ink-soft)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={exp.actual}
+                        onChange={(e) => updateExperiencia(exp.id, "actual", e.target.checked)}
+                      />
+                      Trabajo actualmente acá
+                    </label>
+                  </div>
                 </div>
                 <label className="field">
                   <span
@@ -347,12 +408,16 @@ export default function CrearCurriculum() {
                   <textarea
                     className="field__textarea"
                     value={exp.descripcion}
-                    onChange={(e) => updateExperiencia(exp.id, "descripcion", e.target.value)}
+                    onChange={(e) => updateExperiencia(exp.id, "descripcion", e.target.value.slice(0, 600))}
+                    maxLength={600}
                     placeholder={
                       "Elaboración de reportes financieros.\nControl presupuestario.\nAutomatización de procesos en Excel."
                     }
                   />
                 </label>
+                <div className="field-hint" style={{ textAlign: "right" }}>
+                  {exp.descripcion.length}/600
+                </div>
                 {exp.error && <div className="ai-error">{exp.error}</div>}
               </div>
             ))}
@@ -382,25 +447,51 @@ export default function CrearCurriculum() {
                     value={edu.institucion}
                     onChange={(e) => updateEducacion(edu.id, "institucion", e.target.value)}
                     placeholder="Universidad Nacional"
+                    maxLength={80}
                   />
                   <Field
                     label="Título"
                     value={edu.titulo}
                     onChange={(e) => updateEducacion(edu.id, "titulo", e.target.value)}
                     placeholder="Licenciatura en Administración"
+                    maxLength={80}
                   />
                   <Field
                     label="Fecha inicio"
+                    type="month"
                     value={edu.inicio}
                     onChange={(e) => updateEducacion(edu.id, "inicio", e.target.value)}
-                    placeholder="2015"
+                    max={new Date().toISOString().slice(0, 7)}
                   />
-                  <Field
-                    label="Fecha fin"
-                    value={edu.fin}
-                    onChange={(e) => updateEducacion(edu.id, "fin", e.target.value)}
-                    placeholder="2020"
-                  />
+                  <div className="field">
+                    <span className="field__label">Fecha fin</span>
+                    <input
+                      className="field__input"
+                      type="month"
+                      value={edu.fin}
+                      onChange={(e) => updateEducacion(edu.id, "fin", e.target.value)}
+                      disabled={edu.actual}
+                      max={new Date().toISOString().slice(0, 7)}
+                    />
+                    <label
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        marginTop: 6,
+                        fontSize: 12.5,
+                        color: "var(--ink-soft)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={edu.actual}
+                        onChange={(e) => updateEducacion(edu.id, "actual", e.target.checked)}
+                      />
+                      Cursando actualmente
+                    </label>
+                  </div>
                 </div>
               </div>
             ))}
@@ -424,6 +515,7 @@ export default function CrearCurriculum() {
                 onChange={(e) => setSkillInput(e.target.value)}
                 onKeyDown={onSkillKeyDown}
                 onBlur={() => addSkill(skillInput)}
+                maxLength={30}
                 placeholder={skills.length ? "" : "Excel, Power BI, SAP..."}
               />
             </div>
@@ -438,6 +530,7 @@ export default function CrearCurriculum() {
                   value={idi.idioma}
                   onChange={(e) => updateIdioma(idi.id, "idioma", e.target.value)}
                   placeholder="Inglés"
+                  maxLength={30}
                 />
                 <label className="field">
                   <span className="field__label">Nivel</span>
@@ -477,6 +570,7 @@ export default function CrearCurriculum() {
                   value={c.texto}
                   onChange={(e) => updateCertificacion(c.id, e.target.value)}
                   placeholder="Certificación en Excel Avanzado — Coursera, 2023"
+                  maxLength={120}
                 />
                 <button
                   className="icon-btn"
