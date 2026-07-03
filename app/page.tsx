@@ -134,7 +134,7 @@ export default function CvintaLanding() {
       <div className={`navbar ${scrolled ? "scrolled" : ""}`}>
         <div className="container navbar__inner">
           <div className="logo">
-            <Logo size={26} />
+            <Logo size={32} />
             CVinta
           </div>
           <div className="hidden md:flex items-center gap-2">
@@ -175,7 +175,7 @@ export default function CvintaLanding() {
         <div className="container hero__grid">
           <div>
             <span className="eyebrow">
-              <Zap size={13} /> Gratis, sin registro
+              <Zap size={13} /> 100% gratis, incluso al descargar
             </span>
             <h1>¿Necesitas un currículum ya? Hazlo gratis, en minutos.</h1>
             <p className="hero__sub">
@@ -192,7 +192,7 @@ export default function CvintaLanding() {
                 <span className="icon-dot">
                   <Check size={12} strokeWidth={3} />
                 </span>
-                Gratis
+                Sin registro
               </div>
               <div className="benefit">
                 <span className="icon-dot">
@@ -257,6 +257,7 @@ export default function CvintaLanding() {
         <div className="container" style={{ maxWidth: 720 }}>
           <div className="section-head">
             <h2>Preguntas frecuentes</h2>
+            <p>Todo lo que necesitas saber antes de empezar.</p>
           </div>
           <div className="faq-list">
             {FAQ_ITEMS.map((item) => (
@@ -269,7 +270,7 @@ export default function CvintaLanding() {
       <footer className="footer">
         <div className="container footer__inner">
           <div className="footer__logo">
-            <Logo size={22} />
+            <Logo size={26} />
             <span className="brand-line">CVinta</span>
           </div>
           <p>Un currículum simple, para cualquier persona, en cualquier trabajo.</p>

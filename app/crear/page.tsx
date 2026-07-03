@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
   User,
@@ -13,6 +13,8 @@ import {
   Languages,
   Award,
   FileDown,
+  FileText,
+  ChevronDown,
   Loader2,
   Eye,
   Pencil,
@@ -20,6 +22,7 @@ import {
 import Logo from "@/components/Logo";
 import CVPreview from "@/components/CVPreview";
 import { downloadCVAsPdf } from "@/lib/downloadPdf";
+import { downloadCVAsDocx } from "@/lib/downloadDocx";
 import { CVData, NIVELES } from "@/lib/types";
 
 async function mejorarTextoConIA(texto: string, contexto: "perfil" | "experiencia") {
@@ -253,14 +256,37 @@ export default function CrearCurriculum() {
     }
   };
 
-  const handleDownload = async () => {
+  const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
+  const downloadMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onClickOutside = (e: MouseEvent) => {
+      if (downloadMenuRef.current && !downloadMenuRef.current.contains(e.target as Node)) {
+        setDownloadMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, []);
+
+  const nombreBase = personal.nombre ? `Curriculum - ${personal.nombre}` : "Curriculum";
+
+  const handleDownloadPdf = async () => {
     if (!previewRef.current) return;
+    setDownloadMenuOpen(false);
     setDownloading(true);
     try {
-      const nombreArchivo = personal.nombre
-        ? `Curriculum - ${personal.nombre}.pdf`
-        : "Curriculum.pdf";
-      await downloadCVAsPdf(previewRef.current, nombreArchivo);
+      await downloadCVAsPdf(previewRef.current, `${nombreBase}.pdf`);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const handleDownloadDocx = async () => {
+    setDownloadMenuOpen(false);
+    setDownloading(true);
+    try {
+      await downloadCVAsDocx(data, `${nombreBase}.docx`);
     } finally {
       setDownloading(false);
     }
@@ -289,7 +315,7 @@ export default function CrearCurriculum() {
         <div className={`form-col ${mobileTab !== "editar" ? "hidden-mobile" : ""}`}>
           <div className="form-header">
             <Link href="/" className="logo mb-4" style={{ textDecoration: "none", color: "inherit" }}>
-              <Logo size={22} />
+              <Logo size={26} />
               CVinta
             </Link>
             <h1>Completa tu currículum</h1>
@@ -645,10 +671,35 @@ export default function CrearCurriculum() {
         <div className={`preview-col ${mobileTab !== "preview" ? "hidden-mobile" : ""}`}>
           <div className="preview-toolbar">
             <span className="preview-toolbar__label">Vista previa</span>
-            <button className="download-btn" onClick={handleDownload} disabled={downloading}>
-              {downloading ? <Loader2 size={15} className="spin" /> : <FileDown size={15} />}
-              {downloading ? "Generando..." : "Descargar currículum"}
-            </button>
+            <div className="download-menu" ref={downloadMenuRef}>
+              <button
+                className="download-btn"
+                onClick={() => setDownloadMenuOpen((v) => !v)}
+                disabled={downloading}
+              >
+                {downloading ? <Loader2 size={15} className="spin" /> : <FileDown size={15} />}
+                {downloading ? "Generando..." : "Descargar currículum"}
+                <ChevronDown size={14} className={downloadMenuOpen ? "rotate-180" : ""} style={{ transition: "transform 0.15s ease" }} />
+              </button>
+              {downloadMenuOpen && (
+                <div className="download-menu__list">
+                  <button className="download-menu__item" onClick={handleDownloadPdf}>
+                    <FileDown size={16} />
+                    <span>
+                      <strong>PDF</strong>
+                      <small>Listo para enviar, tal como se ve</small>
+                    </span>
+                  </button>
+                  <button className="download-menu__item" onClick={handleDownloadDocx}>
+                    <FileText size={16} />
+                    <span>
+                      <strong>Word</strong>
+                      <small>Para editar, agregar foto o retocar</small>
+                    </span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           <CVPreview data={data} innerRef={previewRef} />
         </div>
