@@ -12,13 +12,15 @@ import {
   X,
   ChevronDown,
   Mail,
+  Instagram,
+  Linkedin,
 } from "lucide-react";
 import Logo from "@/components/Logo";
 
 const FAQ_ITEMS = [
   {
     q: "¿Es realmente gratis?",
-    a: "Sí. No pedimos tarjeta, no hay planes pagos escondidos y siempre va a existir una versión gratuita.",
+    a: "Sí, incluida la descarga. Muchas herramientas dejan armar el currículum gratis pero piden pagar justo al momento de bajarlo — acá eso no pasa. No pedimos tarjeta, no hay planes pagos escondidos y siempre va a existir una versión gratuita.",
   },
   {
     q: "¿Necesito registrarme?",
@@ -147,7 +149,7 @@ export default function CvintaLanding() {
             </Link>
           </div>
           <button
-            className="md:hidden bg-transparent border-none text-ink cursor-pointer p-1.5"
+            className="md:hidden bg-transparent border-none text-ink cursor-pointer p-2.5 -mr-2.5 flex items-center justify-center"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Abrir menú"
           >
@@ -275,6 +277,15 @@ export default function CvintaLanding() {
           <a className="footer__contact" href="mailto:hola@cvinta.com">
             <Mail size={14} /> hola@cvinta.com
           </a>
+          <div className="footer__social">
+            <span className="footer__social-item" aria-disabled="true">
+              <Instagram size={16} />
+            </span>
+            <span className="footer__social-item" aria-disabled="true">
+              <Linkedin size={16} />
+            </span>
+            <span className="footer__social-note">Muy pronto</span>
+          </div>
         </div>
       </footer>
     </div>

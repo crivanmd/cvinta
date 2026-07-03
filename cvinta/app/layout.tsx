@@ -15,9 +15,17 @@ const body = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "CVinta — Creá tu currículum gratis",
+  metadataBase: new URL("https://cvinta.com"),
+  title: "CVinta — Creá tu currículum gratis, en minutos",
   description:
-    "¿Necesitas un currículum ya? Hazlo gratis, en minutos. Sin registrarte, sin complicaciones.",
+    "¿Necesitas un currículum ya? Hazlo gratis, en minutos. Sin registrarte, sin complicaciones, sin pagar para descargar.",
+  openGraph: {
+    title: "CVinta — Creá tu currículum gratis, en minutos",
+    description: "Sin registrarte, sin complicaciones, sin pagar para descargar.",
+    locale: "es_AR",
+    type: "website",
+  },
+  themeColor: "#1F6F54",
 };
 
 export default function RootLayout({
