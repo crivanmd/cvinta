@@ -72,6 +72,67 @@ function Field({
   );
 }
 
+const MESES_NOMBRES = [
+  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
+];
+const ANIO_ACTUAL = new Date().getFullYear();
+const ANIOS = Array.from({ length: 61 }, (_, i) => ANIO_ACTUAL - i);
+
+function MonthYearPicker({
+  value,
+  onChange,
+  disabled,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  disabled?: boolean;
+}) {
+  const [anio, mes] = value ? value.split("-") : ["", ""];
+
+  const handleMes = (nuevoMes: string) => {
+    if (!nuevoMes) return onChange("");
+    onChange(`${anio || ANIO_ACTUAL}-${nuevoMes}`);
+  };
+  const handleAnio = (nuevoAnio: string) => {
+    if (!nuevoAnio) return onChange("");
+    onChange(`${nuevoAnio}-${mes || "01"}`);
+  };
+
+  return (
+    <div style={{ display: "flex", gap: 6 }}>
+      <select
+        className="field__select"
+        value={mes}
+        onChange={(e) => handleMes(e.target.value)}
+        disabled={disabled}
+        style={{ flex: 1.3 }}
+      >
+        <option value="">Mes</option>
+        {MESES_NOMBRES.map((nombre, i) => (
+          <option key={nombre} value={String(i + 1).padStart(2, "0")}>
+            {nombre}
+          </option>
+        ))}
+      </select>
+      <select
+        className="field__select"
+        value={anio}
+        onChange={(e) => handleAnio(e.target.value)}
+        disabled={disabled}
+        style={{ flex: 1 }}
+      >
+        <option value="">Año</option>
+        {ANIOS.map((a) => (
+          <option key={a} value={a}>
+            {a}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 let idCounter = 1;
 const nextId = () => idCounter++;
 
@@ -254,7 +315,7 @@ export default function CrearCurriculum() {
                 maxLength={100}
                 error={
                   emailTouched && personal.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personal.email)
-                    ? "Revisá el formato del correo."
+                    ? "Revisa el formato del correo."
                     : undefined
                 }
               />
@@ -353,22 +414,19 @@ export default function CrearCurriculum() {
                     placeholder="Analista Financiero"
                     maxLength={80}
                   />
-                  <Field
-                    label="Fecha inicio"
-                    type="month"
-                    value={exp.inicio}
-                    onChange={(e) => updateExperiencia(exp.id, "inicio", e.target.value)}
-                    max={new Date().toISOString().slice(0, 7)}
-                  />
+                  <label className="field">
+                    <span className="field__label">Fecha inicio</span>
+                    <MonthYearPicker
+                      value={exp.inicio}
+                      onChange={(v) => updateExperiencia(exp.id, "inicio", v)}
+                    />
+                  </label>
                   <div className="field">
                     <span className="field__label">Fecha fin</span>
-                    <input
-                      className="field__input"
-                      type="month"
+                    <MonthYearPicker
                       value={exp.fin}
-                      onChange={(e) => updateExperiencia(exp.id, "fin", e.target.value)}
+                      onChange={(v) => updateExperiencia(exp.id, "fin", v)}
                       disabled={exp.actual}
-                      max={new Date().toISOString().slice(0, 7)}
                     />
                     <label
                       style={{
@@ -456,22 +514,19 @@ export default function CrearCurriculum() {
                     placeholder="Licenciatura en Administración"
                     maxLength={80}
                   />
-                  <Field
-                    label="Fecha inicio"
-                    type="month"
-                    value={edu.inicio}
-                    onChange={(e) => updateEducacion(edu.id, "inicio", e.target.value)}
-                    max={new Date().toISOString().slice(0, 7)}
-                  />
+                  <label className="field">
+                    <span className="field__label">Fecha inicio</span>
+                    <MonthYearPicker
+                      value={edu.inicio}
+                      onChange={(v) => updateEducacion(edu.id, "inicio", v)}
+                    />
+                  </label>
                   <div className="field">
                     <span className="field__label">Fecha fin</span>
-                    <input
-                      className="field__input"
-                      type="month"
+                    <MonthYearPicker
                       value={edu.fin}
-                      onChange={(e) => updateEducacion(edu.id, "fin", e.target.value)}
+                      onChange={(v) => updateEducacion(edu.id, "fin", v)}
                       disabled={edu.actual}
-                      max={new Date().toISOString().slice(0, 7)}
                     />
                     <label
                       style={{

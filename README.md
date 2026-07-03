@@ -90,3 +90,4 @@ cvinta/
 - [ ] Comprar el dominio `cvinta.com` (o la variante que hayas elegido) mientras esté barato
 - [ ] Cargar tu clave de Gemini en Vercel para que la IA funcione en producción
 - [ ] Probar el flujo completo una vez publicado: completar un currículum de prueba y descargarlo
+- [ ] Crear las cuentas de Instagram y LinkedIn, y activar los íconos del footer (están en `app/page.tsx`, buscá "footer__social" — hay que convertir los `<span>` en `<a href="...">` con el link real)
