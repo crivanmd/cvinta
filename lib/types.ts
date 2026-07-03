@@ -38,6 +38,12 @@ export type Certificacion = {
   texto: string;
 };
 
+export type SeccionPersonalizada = {
+  id: number;
+  titulo: string;
+  contenido: string;
+};
+
 export type CVData = {
   personal: Personal;
   perfil: string;
@@ -46,6 +52,7 @@ export type CVData = {
   skills: string[];
   idiomas: Idioma[];
   certificaciones: Certificacion[];
+  seccionesPersonalizadas: SeccionPersonalizada[];
 };
 
 export const NIVELES = ["Básico", "Intermedio", "Avanzado", "Nativo"];

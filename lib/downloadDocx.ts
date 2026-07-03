@@ -10,7 +10,7 @@ export async function downloadCVAsDocx(data: CVData, filename: string, locale: "
     await import("docx");
 
   const t = CV_LABELS[locale];
-  const { personal, perfil, experiencias, educacion, skills, idiomas, certificaciones } = data;
+  const { personal, perfil, experiencias, educacion, skills, idiomas, certificaciones, seccionesPersonalizadas } = data;
 
   const contactBits = [
     personal.email,
@@ -154,6 +154,16 @@ export async function downloadCVAsDocx(data: CVData, filename: string, locale: "
       children.push(new Paragraph({ spacing: { after: 20 }, children: [new TextRun({ text: c.texto, size: 20 })] }));
     });
   }
+
+  // Secciones personalizadas
+  const seccionesConTexto = seccionesPersonalizadas.filter((s) => s.titulo.trim() || s.contenido.trim());
+  seccionesConTexto.forEach((s) => {
+    children.push(sectionLabel(s.titulo || t.seccionGenerica));
+    s.contenido.split("\n").forEach((line) => {
+      if (!line.trim()) return;
+      children.push(new Paragraph({ spacing: { after: 20 }, children: [new TextRun({ text: line.trim(), size: 20 })] }));
+    });
+  });
 
   const doc = new Document({
     sections: [

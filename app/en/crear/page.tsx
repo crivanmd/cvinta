@@ -12,6 +12,7 @@ import {
   X,
   Languages,
   Award,
+  Layers,
   FileDown,
   FileText,
   ChevronDown,
@@ -173,6 +174,9 @@ export default function CreateResumeEN() {
 
   const [idiomas, setIdiomas] = useState([{ id: 0, idioma: "", nivel: "Intermedio" }]);
   const [certificaciones, setCertificaciones] = useState<{ id: number; texto: string }[]>([]);
+  const [seccionesPersonalizadas, setSeccionesPersonalizadas] = useState<
+    { id: number; titulo: string; contenido: string }[]
+  >([]);
 
   const addExperiencia = () =>
     setExperiencias((xs) => [
@@ -243,6 +247,13 @@ export default function CreateResumeEN() {
   const updateCertificacion = (id: number, value: string) =>
     setCertificaciones((xs) => xs.map((x) => (x.id === id ? { ...x, texto: value } : x)));
 
+  const addSeccionPersonalizada = () =>
+    setSeccionesPersonalizadas((xs) => [...xs, { id: nextId(), titulo: "", contenido: "" }]);
+  const removeSeccionPersonalizada = (id: number) =>
+    setSeccionesPersonalizadas((xs) => xs.filter((x) => x.id !== id));
+  const updateSeccionPersonalizada = (id: number, field: "titulo" | "contenido", value: string) =>
+    setSeccionesPersonalizadas((xs) => xs.map((x) => (x.id === id ? { ...x, [field]: value } : x)));
+
   const mejorarPerfil = async () => {
     if (!perfil.trim()) return;
     setEnhancingPerfil(true);
@@ -293,7 +304,7 @@ export default function CreateResumeEN() {
     }
   };
 
-  const data: CVData = { personal, perfil, experiencias, educacion, skills, idiomas, certificaciones };
+  const data: CVData = { personal, perfil, experiencias, educacion, skills, idiomas, certificaciones, seccionesPersonalizadas };
 
   return (
     <div className="w-full">
@@ -665,6 +676,48 @@ export default function CreateResumeEN() {
             ))}
             <button className="add-btn" onClick={addCertificacion}>
               <Plus size={15} /> Add certification
+            </button>
+          </Section>
+
+          <Section icon={<Layers size={15} />} title="Other section (optional)">
+            {seccionesPersonalizadas.map((s, i) => (
+              <div className="exp-card" key={s.id}>
+                <div className="exp-card__top">
+                  <span className="exp-card__label">Section {i + 1}</span>
+                  <button
+                    className="icon-btn"
+                    onClick={() => removeSeccionPersonalizada(s.id)}
+                    aria-label="Remove section"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+                <Field
+                  label="Section name"
+                  value={s.titulo}
+                  onChange={(e) => updateSeccionPersonalizada(s.id, "titulo", e.target.value)}
+                  placeholder="Volunteering, Projects, Publications..."
+                  maxLength={40}
+                />
+                <label className="field" style={{ marginTop: 10 }}>
+                  <span className="field__label">Content</span>
+                  <textarea
+                    className="field__textarea"
+                    value={s.contenido}
+                    onChange={(e) =>
+                      updateSeccionPersonalizada(s.id, "contenido", e.target.value.slice(0, 500))
+                    }
+                    maxLength={500}
+                    placeholder="Add whatever you'd like here."
+                  />
+                </label>
+                <div className="field-hint" style={{ textAlign: "right" }}>
+                  {s.contenido.length}/500
+                </div>
+              </div>
+            ))}
+            <button className="add-btn" onClick={addSeccionPersonalizada}>
+              <Plus size={15} /> Add section
             </button>
           </Section>
         </div>

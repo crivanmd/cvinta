@@ -13,6 +13,7 @@ export const CV_LABELS = {
     cargo: "Cargo",
     titulo: "Título",
     nombrePlaceholder: "Tu nombre completo",
+    seccionGenerica: "Otra sección",
   },
   en: {
     perfil: "Profile",
@@ -25,6 +26,7 @@ export const CV_LABELS = {
     cargo: "Role",
     titulo: "Degree",
     nombrePlaceholder: "Your full name",
+    seccionGenerica: "Other section",
   },
 } as const;
 
@@ -38,7 +40,7 @@ export default function CVPreview({
   locale?: "es" | "en";
 }) {
   const t = CV_LABELS[locale];
-  const { personal, perfil, experiencias, educacion, skills, idiomas, certificaciones } = data;
+  const { personal, perfil, experiencias, educacion, skills, idiomas, certificaciones, seccionesPersonalizadas } = data;
 
   const contactBits = [
     personal.email,
@@ -163,6 +165,15 @@ export default function CVPreview({
             ))}
         </div>
       )}
+
+      {seccionesPersonalizadas
+        .filter((s) => s.titulo.trim() || s.contenido.trim())
+        .map((s) => (
+          <div className="cv-page__section" key={s.id}>
+            <div className="cv-page__label">{s.titulo || t.seccionGenerica}</div>
+            <div className="cv-page__text">{s.contenido}</div>
+          </div>
+        ))}
     </div>
   );
 }
