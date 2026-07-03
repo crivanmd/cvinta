@@ -1,13 +1,43 @@
 import { CVData } from "@/lib/types";
 import { formatMesAnio } from "@/lib/format";
 
+export const CV_LABELS = {
+  es: {
+    perfil: "Perfil",
+    experiencia: "Experiencia",
+    educacion: "Educación",
+    habilidades: "Habilidades",
+    idiomas: "Idiomas",
+    certificaciones: "Certificaciones",
+    actualidad: "Actualidad",
+    cargo: "Cargo",
+    titulo: "Título",
+    nombrePlaceholder: "Tu nombre completo",
+  },
+  en: {
+    perfil: "Profile",
+    experiencia: "Experience",
+    educacion: "Education",
+    habilidades: "Skills",
+    idiomas: "Languages",
+    certificaciones: "Certifications",
+    actualidad: "Present",
+    cargo: "Role",
+    titulo: "Degree",
+    nombrePlaceholder: "Your full name",
+  },
+} as const;
+
 export default function CVPreview({
   data,
   innerRef,
+  locale = "es",
 }: {
   data: CVData;
   innerRef?: React.RefObject<HTMLDivElement>;
+  locale?: "es" | "en";
 }) {
+  const t = CV_LABELS[locale];
   const { personal, perfil, experiencias, educacion, skills, idiomas, certificaciones } = data;
 
   const contactBits = [
@@ -25,7 +55,7 @@ export default function CVPreview({
     <div className="cv-page" ref={innerRef}>
       <div className="cv-page__head">
         <div className="cv-page__name">
-          {personal.nombre || <span className="ph">Tu nombre completo</span>}
+          {personal.nombre || <span className="ph">{t.nombrePlaceholder}</span>}
         </div>
         {experiencias[0]?.cargo && <div className="cv-page__role">{experiencias[0].cargo}</div>}
         {contactBits.length > 0 && (
@@ -42,23 +72,23 @@ export default function CVPreview({
 
       {perfil.trim() && (
         <div className="cv-page__section">
-          <div className="cv-page__label">Perfil</div>
+          <div className="cv-page__label">{t.perfil}</div>
           <div className="cv-page__text">{perfil}</div>
         </div>
       )}
 
       {hasExp && (
         <div className="cv-page__section">
-          <div className="cv-page__label">Experiencia</div>
+          <div className="cv-page__label">{t.experiencia}</div>
           {experiencias
             .filter((e) => e.empresa || e.cargo || e.descripcion)
             .map((e) => (
               <div className="cv-exp-item" key={e.id}>
                 <div className="cv-exp-item__top">
-                  <span className="cv-exp-item__role">{e.cargo || "Cargo"}</span>
+                  <span className="cv-exp-item__role">{e.cargo || t.cargo}</span>
                   {(e.inicio || e.fin || e.actual) && (
                     <span className="cv-exp-item__dates">
-                      {formatMesAnio(e.inicio)} — {e.actual ? "Actualidad" : formatMesAnio(e.fin)}
+                      {formatMesAnio(e.inicio)} — {e.actual ? t.actualidad : formatMesAnio(e.fin)}
                     </span>
                   )}
                 </div>
@@ -75,18 +105,18 @@ export default function CVPreview({
 
       {hasEdu && (
         <div className="cv-page__section">
-          <div className="cv-page__label">Educación</div>
+          <div className="cv-page__label">{t.educacion}</div>
           {educacion
             .filter((e) => e.institucion || e.titulo)
             .map((e) => (
               <div className="cv-edu-item" key={e.id}>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: 13 }}>{e.titulo || "Título"}</div>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>{e.titulo || t.titulo}</div>
                   <div style={{ fontSize: 12, color: "#55605A" }}>{e.institucion}</div>
                 </div>
                 {(e.inicio || e.fin || e.actual) && (
                   <div className="cv-exp-item__dates">
-                    {formatMesAnio(e.inicio)} — {e.actual ? "Actualidad" : formatMesAnio(e.fin)}
+                    {formatMesAnio(e.inicio)} — {e.actual ? t.actualidad : formatMesAnio(e.fin)}
                   </div>
                 )}
               </div>
@@ -96,7 +126,7 @@ export default function CVPreview({
 
       {skills.length > 0 && (
         <div className="cv-page__section">
-          <div className="cv-page__label">Habilidades</div>
+          <div className="cv-page__label">{t.habilidades}</div>
           <div className="cv-chip-row">
             {skills.map((s) => (
               <span className="cv-chip" key={s}>
@@ -109,7 +139,7 @@ export default function CVPreview({
 
       {idiomas.some((i) => i.idioma) && (
         <div className="cv-page__section">
-          <div className="cv-page__label">Idiomas</div>
+          <div className="cv-page__label">{t.idiomas}</div>
           {idiomas
             .filter((i) => i.idioma)
             .map((i) => (
@@ -123,7 +153,7 @@ export default function CVPreview({
 
       {certificaciones.some((c) => c.texto) && (
         <div className="cv-page__section">
-          <div className="cv-page__label">Certificaciones</div>
+          <div className="cv-page__label">{t.certificaciones}</div>
           {certificaciones
             .filter((c) => c.texto)
             .map((c) => (

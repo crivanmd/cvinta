@@ -1,13 +1,15 @@
 import { CVData } from "@/lib/types";
 import { formatMesAnio } from "@/lib/format";
+import { CV_LABELS } from "@/components/CVPreview";
 
 const ACCENT = "16553F";
 const GRAY = "55605A";
 
-export async function downloadCVAsDocx(data: CVData, filename: string) {
+export async function downloadCVAsDocx(data: CVData, filename: string, locale: "es" | "en" = "es") {
   const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle } =
     await import("docx");
 
+  const t = CV_LABELS[locale];
   const { personal, perfil, experiencias, educacion, skills, idiomas, certificaciones } = data;
 
   const contactBits = [
@@ -34,7 +36,7 @@ export async function downloadCVAsDocx(data: CVData, filename: string) {
     new Paragraph({
       spacing: { after: 40 },
       children: [
-        new TextRun({ text: personal.nombre || "Tu nombre completo", bold: true, size: 40 }),
+        new TextRun({ text: personal.nombre || t.nombrePlaceholder, bold: true, size: 40 }),
       ],
     })
   );
@@ -58,25 +60,25 @@ export async function downloadCVAsDocx(data: CVData, filename: string) {
 
   // Perfil
   if (perfil.trim()) {
-    children.push(sectionLabel("Perfil"));
+    children.push(sectionLabel(t.perfil));
     children.push(new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: perfil, size: 21 })] }));
   }
 
   // Experiencia
   const expConTexto = experiencias.filter((e) => e.empresa || e.cargo || e.descripcion);
   if (expConTexto.length) {
-    children.push(sectionLabel("Experiencia"));
+    children.push(sectionLabel(t.experiencia));
     expConTexto.forEach((e) => {
       const fechas =
         e.inicio || e.fin || e.actual
-          ? `${formatMesAnio(e.inicio)} — ${e.actual ? "Actualidad" : formatMesAnio(e.fin)}`
+          ? `${formatMesAnio(e.inicio)} — ${e.actual ? t.actualidad : formatMesAnio(e.fin)}`
           : "";
       children.push(
         new Paragraph({
           spacing: { before: 120, after: 20 },
           tabStops: [{ type: "right" as const, position: 9026 }],
           children: [
-            new TextRun({ text: e.cargo || "Cargo", bold: true, size: 21 }),
+            new TextRun({ text: e.cargo || t.cargo, bold: true, size: 21 }),
             new TextRun({ text: `\t${fechas}`, size: 18, color: GRAY }),
           ],
         })
@@ -102,18 +104,18 @@ export async function downloadCVAsDocx(data: CVData, filename: string) {
   // Educación
   const eduConTexto = educacion.filter((e) => e.institucion || e.titulo);
   if (eduConTexto.length) {
-    children.push(sectionLabel("Educación"));
+    children.push(sectionLabel(t.educacion));
     eduConTexto.forEach((e) => {
       const fechas =
         e.inicio || e.fin || e.actual
-          ? `${formatMesAnio(e.inicio)} — ${e.actual ? "Actualidad" : formatMesAnio(e.fin)}`
+          ? `${formatMesAnio(e.inicio)} — ${e.actual ? t.actualidad : formatMesAnio(e.fin)}`
           : "";
       children.push(
         new Paragraph({
           spacing: { before: 100, after: 10 },
           tabStops: [{ type: "right" as const, position: 9026 }],
           children: [
-            new TextRun({ text: e.titulo || "Título", bold: true, size: 21 }),
+            new TextRun({ text: e.titulo || t.titulo, bold: true, size: 21 }),
             new TextRun({ text: `\t${fechas}`, size: 18, color: GRAY }),
           ],
         })
@@ -126,14 +128,14 @@ export async function downloadCVAsDocx(data: CVData, filename: string) {
 
   // Habilidades
   if (skills.length) {
-    children.push(sectionLabel("Habilidades"));
+    children.push(sectionLabel(t.habilidades));
     children.push(new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: skills.join("  ·  "), size: 20 })] }));
   }
 
   // Idiomas
   const idiomasConTexto = idiomas.filter((i) => i.idioma);
   if (idiomasConTexto.length) {
-    children.push(sectionLabel("Idiomas"));
+    children.push(sectionLabel(t.idiomas));
     idiomasConTexto.forEach((i) => {
       children.push(
         new Paragraph({
@@ -147,7 +149,7 @@ export async function downloadCVAsDocx(data: CVData, filename: string) {
   // Certificaciones
   const certsConTexto = certificaciones.filter((c) => c.texto);
   if (certsConTexto.length) {
-    children.push(sectionLabel("Certificaciones"));
+    children.push(sectionLabel(t.certificaciones));
     certsConTexto.forEach((c) => {
       children.push(new Paragraph({ spacing: { after: 20 }, children: [new TextRun({ text: c.texto, size: 20 })] }));
     });

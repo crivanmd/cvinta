@@ -19,28 +19,28 @@ import Logo from "@/components/Logo";
 
 const FAQ_ITEMS = [
   {
-    q: "¿Es realmente gratis?",
-    a: "Sí, incluida la descarga. Muchas herramientas dejan armar el currículum gratis pero piden pagar justo al momento de bajarlo — acá eso no pasa. No pedimos tarjeta, no hay planes pagos escondidos y siempre va a existir una versión gratuita.",
+    q: "Is it really free?",
+    a: "Yes, downloading included. Many tools let you build your resume for free but ask you to pay right when you try to download it — that doesn't happen here. No card required, no hidden paid plans, and there will always be a free version.",
   },
   {
-    q: "¿Necesito registrarme?",
-    a: "No. Completas tus datos y descargas tu currículum. No creamos una cuenta ni te pedimos contraseña.",
+    q: "Do I need to sign up?",
+    a: "No. You fill in your info and download your resume. We don't create an account or ask for a password.",
   },
   {
-    q: "¿Guardan mis datos?",
-    a: "No. Tu información vive solo en tu navegador mientras completas el formulario. No la guardamos en ningún servidor.",
+    q: "Do you store my data?",
+    a: "No. Your information only lives in your browser while you fill out the form. We don't save it on any server.",
   },
   {
-    q: "¿Puedo guardar mi currículum para editarlo más adelante?",
-    a: "Por ahora no hace falta ninguna cuenta: completas y descargas. Estamos trabajando en una opción para crear una cuenta gratuita y guardar tu currículum, para quien la quiera usar más adelante.",
+    q: "Can I save my resume to edit it later?",
+    a: "For now, no account is needed: you fill it in and download it. We're working on an optional free account to save your resume, for anyone who wants to use it later.",
   },
   {
-    q: "¿Sirve si no tengo mucha experiencia laboral o estudios formales?",
-    a: "Sí. Puedes completar solo las secciones que tengas: no hace falta llenar todo para generar un buen currículum.",
+    q: "Does it work if I don't have much work experience or formal education?",
+    a: "Yes. You can fill in only the sections you have — you don't need to complete everything to get a good resume.",
   },
   {
-    q: "¿El documento sirve para sistemas ATS?",
-    a: "Sí. El diseño usa una sola columna, texto real (no imágenes) y una estructura que los sistemas de selección automática pueden leer sin problemas.",
+    q: "Does the document work with ATS systems?",
+    a: "Yes. The design uses a single column, real text (not images), and a structure that applicant tracking systems can read without issues.",
   },
 ];
 
@@ -62,11 +62,11 @@ function CVMockup({ compact = false }: { compact?: boolean }) {
     <div className={`cv-mock ${compact ? "cv-mock--compact" : ""}`}>
       <div className="cv-mock__badge">
         <FileCheck2 size={13} strokeWidth={2.4} />
-        <span>Listo para ATS</span>
+        <span>ATS ready</span>
       </div>
       <div className="cv-mock__head">
         <div className="cv-mock__name">Alex Smith</div>
-        <div className="cv-mock__role">Analista Financiero</div>
+        <div className="cv-mock__role">Financial Analyst</div>
         <div className="cv-mock__contact">
           <span>alex@email.com</span>
           <span className="dot" />
@@ -76,18 +76,18 @@ function CVMockup({ compact = false }: { compact?: boolean }) {
         </div>
       </div>
       <div className="cv-mock__section">
-        <div className="cv-mock__label">Perfil</div>
+        <div className="cv-mock__label">Profile</div>
         <div className="cv-mock__line w-full" />
         <div className="cv-mock__line w-90" />
       </div>
       <div className="cv-mock__section">
-        <div className="cv-mock__label">Experiencia</div>
+        <div className="cv-mock__label">Experience</div>
         <div className="cv-mock__row">
           <div className="cv-mock__col">
             <div className="cv-mock__line w-60 strong" />
             <div className="cv-mock__line w-40" />
           </div>
-          <div className="cv-mock__date">2022 — Actualidad</div>
+          <div className="cv-mock__date">2022 — Present</div>
         </div>
         <div className="cv-mock__bullets">
           <div className="cv-mock__line w-90" />
@@ -96,7 +96,7 @@ function CVMockup({ compact = false }: { compact?: boolean }) {
         </div>
       </div>
       <div className="cv-mock__section">
-        <div className="cv-mock__label">Habilidades</div>
+        <div className="cv-mock__label">Skills</div>
         <div className="cv-mock__chips">
           {["Excel", "Power BI", "SAP", "PowerPoint"].map((c) => (
             <span key={c} className="chip">
@@ -119,7 +119,7 @@ function StepCard({ n, title, text }: { n: string; title: string; text: string }
   );
 }
 
-export default function CvintaLanding() {
+export default function CvintaLandingEN() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -139,20 +139,20 @@ export default function CvintaLanding() {
           </div>
           <div className="hidden md:flex items-center gap-2">
             <a href="#como-funciona" className="btn btn-ghost">
-              Cómo funciona
+              How it works
             </a>
             <a href="#preguntas" className="btn btn-ghost">
-              Preguntas
+              FAQ
             </a>
-            <Link href="/en" className="lang-switch">EN</Link>
-            <Link href="/crear" className="btn btn-primary">
-              Crear currículum
+            <Link href="/" className="lang-switch">ES</Link>
+            <Link href="/en/crear" className="btn btn-primary">
+              Create resume
             </Link>
           </div>
           <button
             className="md:hidden bg-transparent border-none text-ink cursor-pointer p-2.5 -mr-2.5 flex items-center justify-center"
             onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Abrir menú"
+            aria-label="Open menu"
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -160,16 +160,16 @@ export default function CvintaLanding() {
         {menuOpen && (
           <div className="container flex flex-col gap-2 pb-4 border-t border-line pt-2">
             <a href="#como-funciona" className="btn btn-ghost justify-start">
-              Cómo funciona
+              How it works
             </a>
             <a href="#preguntas" className="btn btn-ghost justify-start">
-              Preguntas
+              FAQ
             </a>
-            <Link href="/en" className="btn btn-ghost justify-start">
-              🌐 English
+            <Link href="/" className="btn btn-ghost justify-start">
+              🌐 Español
             </Link>
-            <Link href="/crear" className="btn btn-primary justify-center">
-              Crear currículum
+            <Link href="/en/crear" className="btn btn-primary justify-center">
+              Create resume
             </Link>
           </div>
         )}
@@ -179,36 +179,36 @@ export default function CvintaLanding() {
         <div className="container hero__grid">
           <div>
             <span className="eyebrow">
-              <Zap size={13} /> 100% gratis, incluso al descargar
+              <Zap size={13} /> 100% free, even the download
             </span>
-            <h1>¿Necesitas un currículum ya? Hazlo gratis, en minutos.</h1>
+            <h1>Need a resume now? Make it free, in minutes.</h1>
             <p className="hero__sub">
-              Sin registrarte, sin complicaciones. <strong>Listo en menos de 3 minutos.</strong>
+              No sign-up, no hassle. <strong>Ready in under 3 minutes.</strong>
             </p>
             <div className="hero__cta-row">
-              <Link href="/crear" className="btn btn-primary btn-lg">
-                Crear mi currículum <ArrowRight size={16} />
+              <Link href="/en/crear" className="btn btn-primary btn-lg">
+                Create my resume <ArrowRight size={16} />
               </Link>
-              <span className="hero__hint">No pedimos tarjeta ni cuenta.</span>
+              <span className="hero__hint">No card, no account needed.</span>
             </div>
             <div className="benefits">
               <div className="benefit">
                 <span className="icon-dot">
                   <Check size={12} strokeWidth={3} />
                 </span>
-                Sin registro
+                No sign-up
               </div>
               <div className="benefit">
                 <span className="icon-dot">
                   <FileCheck2 size={12} strokeWidth={2.5} />
                 </span>
-                Documento profesional
+                Professional document
               </div>
               <div className="benefit">
                 <span className="icon-dot">
                   <ShieldCheck size={12} strokeWidth={2.5} />
                 </span>
-                Compatible con ATS
+                ATS-friendly
               </div>
             </div>
           </div>
@@ -222,24 +222,24 @@ export default function CvintaLanding() {
       <section className="section" id="como-funciona">
         <div className="container">
           <div className="section-head">
-            <h2>Cómo funciona</h2>
-            <p>Tres pasos, sin vueltas.</p>
+            <h2>How it works</h2>
+            <p>Three steps, no fuss.</p>
           </div>
           <div className="steps-grid">
             <StepCard
               n="01"
-              title="Completa tus datos"
-              text="Ingresa tu información personal, experiencia laboral, educación y habilidades."
+              title="Fill in your info"
+              text="Add your personal details, work experience, education and skills."
             />
             <StepCard
               n="02"
-              title="Revisa la vista previa"
-              text="Comprueba que todo esté correcto antes de descargar, viendo los cambios en tiempo real."
+              title="Check the preview"
+              text="See your resume update live, and make sure everything looks right before downloading."
             />
             <StepCard
               n="03"
-              title="Descarga tu currículum"
-              text="Se descarga en segundos, tal como lo ves en pantalla."
+              title="Download your resume"
+              text="It downloads in seconds, exactly as you see it on screen."
             />
           </div>
         </div>
@@ -248,8 +248,8 @@ export default function CvintaLanding() {
       <section className="preview-section">
         <div className="container" style={{ paddingTop: 64, paddingBottom: 64 }}>
           <div className="section-head">
-            <h2>Un diseño único. Simple y profesional.</h2>
-            <p>Minimalista y apto para los sistemas ATS que usan las empresas para filtrar currículums.</p>
+            <h2>One design. Simple and professional.</h2>
+            <p>Minimalist and built to pass the ATS systems companies use to screen resumes.</p>
           </div>
           <div className="preview-frame">
             <CVMockup compact />
@@ -260,8 +260,8 @@ export default function CvintaLanding() {
       <section className="section" id="preguntas">
         <div className="container" style={{ maxWidth: 720 }}>
           <div className="section-head">
-            <h2>Preguntas frecuentes</h2>
-            <p>Todo lo que necesitas saber antes de empezar.</p>
+            <h2>Frequently asked questions</h2>
+            <p>Everything you need to know before you start.</p>
           </div>
           <div className="faq-list">
             {FAQ_ITEMS.map((item) => (
@@ -277,8 +277,8 @@ export default function CvintaLanding() {
             <Logo size={26} />
             <span className="brand-line">CVinta</span>
           </div>
-          <p>Un currículum simple, para cualquier persona, en cualquier trabajo.</p>
-          <p>Siempre existirá una versión gratuita.</p>
+          <p>A simple resume, for anyone, for any job.</p>
+          <p>There will always be a free version.</p>
           <a className="footer__contact" href="mailto:hola@cvinta.com">
             <Mail size={14} /> hola@cvinta.com
           </a>
@@ -289,7 +289,7 @@ export default function CvintaLanding() {
             <span className="footer__social-item" aria-disabled="true">
               <Linkedin size={16} />
             </span>
-            <span className="footer__social-note">Muy pronto</span>
+            <span className="footer__social-note">Coming soon</span>
           </div>
         </div>
       </footer>

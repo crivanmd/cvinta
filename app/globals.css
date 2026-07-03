@@ -81,6 +81,16 @@ h3 {
   font-size: 15.5px;
   border-radius: 11px;
 }
+.lang-switch {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+.lang-switch:hover { background: rgba(0, 0, 0, 0.045); color: var(--ink); }
 
 /* Navbar */
 .navbar {

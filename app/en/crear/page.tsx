@@ -23,7 +23,8 @@ import Logo from "@/components/Logo";
 import CVPreview from "@/components/CVPreview";
 import { downloadCVAsPdf } from "@/lib/downloadPdf";
 import { downloadCVAsDocx } from "@/lib/downloadDocx";
-import { CVData, NIVELES } from "@/lib/types";
+import { CVData } from "@/lib/types";
+const NIVELES = ["Basic", "Intermediate", "Advanced", "Native"];
 
 async function mejorarTextoConIA(texto: string, contexto: "perfil" | "experiencia") {
   const res = await fetch("/api/mejorar", {
@@ -31,7 +32,7 @@ async function mejorarTextoConIA(texto: string, contexto: "perfil" | "experienci
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ texto, contexto }),
   });
-  if (!res.ok) throw new Error("No se pudo mejorar el texto");
+  if (!res.ok) throw new Error("Couldn't improve the text");
   const data = await res.json();
   return data.mejorado as string;
 }
@@ -76,8 +77,8 @@ function Field({
 }
 
 const MESES_NOMBRES = [
-  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
 ];
 const ANIO_ACTUAL = new Date().getFullYear();
 const ANIOS = Array.from({ length: 61 }, (_, i) => ANIO_ACTUAL - i);
@@ -111,7 +112,7 @@ function MonthYearPicker({
         disabled={disabled}
         style={{ flex: 1.3 }}
       >
-        <option value="">Mes</option>
+        <option value="">Month</option>
         {MESES_NOMBRES.map((nombre, i) => (
           <option key={nombre} value={String(i + 1).padStart(2, "0")}>
             {nombre}
@@ -125,7 +126,7 @@ function MonthYearPicker({
         disabled={disabled}
         style={{ flex: 1 }}
       >
-        <option value="">Año</option>
+        <option value="">Year</option>
         {ANIOS.map((a) => (
           <option key={a} value={a}>
             {a}
@@ -139,7 +140,7 @@ function MonthYearPicker({
 let idCounter = 1;
 const nextId = () => idCounter++;
 
-export default function CrearCurriculum() {
+export default function CreateResumeEN() {
   const [mobileTab, setMobileTab] = useState<"editar" | "preview">("editar");
   const previewRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
@@ -199,7 +200,7 @@ export default function CrearCurriculum() {
       const mejorado = await mejorarTextoConIA(exp.descripcion, "experiencia");
       updateExperiencia(id, "descripcion", mejorado);
     } catch {
-      updateExperiencia(id, "error", "No se pudo mejorar el texto. Probá de nuevo.");
+      updateExperiencia(id, "error", "Couldn't improve the text. Please try again.");
     } finally {
       updateExperiencia(id, "enhancing", false);
     }
@@ -250,7 +251,7 @@ export default function CrearCurriculum() {
       const mejorado = await mejorarTextoConIA(perfil, "perfil");
       setPerfil(mejorado);
     } catch {
-      setPerfilError("No se pudo mejorar el texto. Probá de nuevo.");
+      setPerfilError("Couldn't improve the text. Please try again.");
     } finally {
       setEnhancingPerfil(false);
     }
@@ -286,7 +287,7 @@ export default function CrearCurriculum() {
     setDownloadMenuOpen(false);
     setDownloading(true);
     try {
-      await downloadCVAsDocx(data, `${nombreBase}.docx`);
+      await downloadCVAsDocx(data, `${nombreBase}.docx`, "en");
     } finally {
       setDownloading(false);
     }
@@ -301,38 +302,38 @@ export default function CrearCurriculum() {
           className={`mobile-tab ${mobileTab === "editar" ? "active" : ""}`}
           onClick={() => setMobileTab("editar")}
         >
-          <Pencil size={15} /> Editar
+          <Pencil size={15} /> Edit
         </button>
         <button
           className={`mobile-tab ${mobileTab === "preview" ? "active" : ""}`}
           onClick={() => setMobileTab("preview")}
         >
-          <Eye size={15} /> Vista previa
+          <Eye size={15} /> Preview
         </button>
       </div>
 
       <div className="layout">
         <div className={`form-col ${mobileTab !== "editar" ? "hidden-mobile" : ""}`}>
           <div className="form-header">
-            <Link href="/" className="logo mb-4" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link href="/en" className="logo mb-4" style={{ textDecoration: "none", color: "inherit" }}>
               <Logo size={26} />
               CVinta
             </Link>
-            <h1>Completa tu currículum</h1>
-            <p>La vista previa se actualiza en tiempo real, a la derecha.</p>
+            <h1>Fill in your resume</h1>
+            <p>The preview updates live, on the right.</p>
           </div>
 
-          <Section icon={<User size={15} />} title="Datos personales">
+          <Section icon={<User size={15} />} title="Personal details">
             <div className="grid-2">
               <Field
-                label="Nombre completo"
+                label="Full name"
                 value={personal.nombre}
                 onChange={(e) => setPersonal({ ...personal, nombre: e.target.value })}
                 placeholder="Alex Smith"
                 maxLength={80}
               />
               <Field
-                label="Correo electrónico"
+                label="Email"
                 type="email"
                 value={personal.email}
                 onChange={(e) => setPersonal({ ...personal, email: e.target.value })}
@@ -341,29 +342,29 @@ export default function CrearCurriculum() {
                 maxLength={100}
                 error={
                   emailTouched && personal.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personal.email)
-                    ? "Revisa el formato del correo."
+                    ? "Check the email format."
                     : undefined
                 }
               />
               <Field
-                label="Teléfono"
+                label="Phone"
                 value={personal.telefono}
                 onChange={(e) => setPersonal({ ...personal, telefono: e.target.value })}
-                placeholder="+54 9 261 1234567"
+                placeholder="+1 555 123 4567"
                 maxLength={25}
               />
               <Field
-                label="Ciudad"
+                label="City"
                 value={personal.ciudad}
                 onChange={(e) => setPersonal({ ...personal, ciudad: e.target.value })}
-                placeholder="Mendoza"
+                placeholder="Austin"
                 maxLength={50}
               />
               <Field
-                label="País"
+                label="Country"
                 value={personal.pais}
                 onChange={(e) => setPersonal({ ...personal, pais: e.target.value })}
-                placeholder="Argentina"
+                placeholder="United States"
                 maxLength={50}
               />
               <Field
@@ -374,7 +375,7 @@ export default function CrearCurriculum() {
                 maxLength={100}
               />
               <Field
-                label="Sitio web (opcional)"
+                label="Website (optional)"
                 value={personal.web}
                 onChange={(e) => setPersonal({ ...personal, web: e.target.value })}
                 placeholder="alexsmith.com"
@@ -385,7 +386,7 @@ export default function CrearCurriculum() {
 
           <Section
             icon={<Sparkles size={15} />}
-            title="Perfil profesional"
+            title="Professional profile"
             right={
               <button
                 className="ai-btn"
@@ -393,7 +394,7 @@ export default function CrearCurriculum() {
                 onClick={mejorarPerfil}
               >
                 {enhancingPerfil ? <Loader2 size={13} className="spin" /> : <Sparkles size={13} />}
-                Mejorar con IA
+                Improve with AI
               </button>
             }
           >
@@ -402,7 +403,7 @@ export default function CrearCurriculum() {
               value={perfil}
               onChange={(e) => setPerfil(e.target.value.slice(0, 500))}
               maxLength={500}
-              placeholder="Analista financiero con experiencia en control de gestión, análisis de costos y elaboración de reportes."
+              placeholder="Financial analyst with experience in budget control, cost analysis and reporting."
             />
             <div className="field-hint" style={{ textAlign: "right" }}>
               {perfil.length}/500
@@ -410,16 +411,16 @@ export default function CrearCurriculum() {
             {perfilError && <div className="ai-error">{perfilError}</div>}
           </Section>
 
-          <Section icon={<Briefcase size={15} />} title="Experiencia">
+          <Section icon={<Briefcase size={15} />} title="Experience">
             {experiencias.map((exp, i) => (
               <div className="exp-card" key={exp.id}>
                 <div className="exp-card__top">
-                  <span className="exp-card__label">Experiencia {i + 1}</span>
+                  <span className="exp-card__label">Experience {i + 1}</span>
                   {experiencias.length > 1 && (
                     <button
                       className="icon-btn"
                       onClick={() => removeExperiencia(exp.id)}
-                      aria-label="Eliminar experiencia"
+                      aria-label="Remove experience"
                     >
                       <Trash2 size={15} />
                     </button>
@@ -427,28 +428,28 @@ export default function CrearCurriculum() {
                 </div>
                 <div className="grid-2" style={{ marginBottom: 10 }}>
                   <Field
-                    label="Empresa"
+                    label="Company"
                     value={exp.empresa}
                     onChange={(e) => updateExperiencia(exp.id, "empresa", e.target.value)}
-                    placeholder="Empresa ABC"
+                    placeholder="Company ABC"
                     maxLength={80}
                   />
                   <Field
-                    label="Cargo"
+                    label="Role"
                     value={exp.cargo}
                     onChange={(e) => updateExperiencia(exp.id, "cargo", e.target.value)}
-                    placeholder="Analista Financiero"
+                    placeholder="Financial Analyst"
                     maxLength={80}
                   />
                   <label className="field">
-                    <span className="field__label">Fecha inicio</span>
+                    <span className="field__label">Start date</span>
                     <MonthYearPicker
                       value={exp.inicio}
                       onChange={(v) => updateExperiencia(exp.id, "inicio", v)}
                     />
                   </label>
                   <div className="field">
-                    <span className="field__label">Fecha fin</span>
+                    <span className="field__label">End date</span>
                     <MonthYearPicker
                       value={exp.fin}
                       onChange={(v) => updateExperiencia(exp.id, "fin", v)}
@@ -470,7 +471,7 @@ export default function CrearCurriculum() {
                         checked={exp.actual}
                         onChange={(e) => updateExperiencia(exp.id, "actual", e.target.checked)}
                       />
-                      Trabajo actualmente acá
+                      I currently work here
                     </label>
                   </div>
                 </div>
@@ -479,14 +480,14 @@ export default function CrearCurriculum() {
                     className="field__label"
                     style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
                   >
-                    Descripción
+                    Description
                     <button
                       className="ai-btn"
                       disabled={exp.enhancing || !exp.descripcion.trim()}
                       onClick={() => mejorarExperiencia(exp.id)}
                     >
                       {exp.enhancing ? <Loader2 size={13} className="spin" /> : <Sparkles size={13} />}
-                      Mejorar con IA
+                      Improve with AI
                     </button>
                   </span>
                   <textarea
@@ -495,7 +496,7 @@ export default function CrearCurriculum() {
                     onChange={(e) => updateExperiencia(exp.id, "descripcion", e.target.value.slice(0, 600))}
                     maxLength={600}
                     placeholder={
-                      "Elaboración de reportes financieros.\nControl presupuestario.\nAutomatización de procesos en Excel."
+                      "Prepared financial reports.\nManaged budget control.\nAutomated Excel processes."
                     }
                   />
                 </label>
@@ -506,20 +507,20 @@ export default function CrearCurriculum() {
               </div>
             ))}
             <button className="add-btn" onClick={addExperiencia}>
-              <Plus size={15} /> Agregar otra experiencia
+              <Plus size={15} /> Add another experience
             </button>
           </Section>
 
-          <Section icon={<GraduationCap size={15} />} title="Educación">
+          <Section icon={<GraduationCap size={15} />} title="Education">
             {educacion.map((edu, i) => (
               <div className="exp-card" key={edu.id}>
                 <div className="exp-card__top">
-                  <span className="exp-card__label">Educación {i + 1}</span>
+                  <span className="exp-card__label">Education {i + 1}</span>
                   {educacion.length > 1 && (
                     <button
                       className="icon-btn"
                       onClick={() => removeEducacion(edu.id)}
-                      aria-label="Eliminar educación"
+                      aria-label="Remove education"
                     >
                       <Trash2 size={15} />
                     </button>
@@ -527,28 +528,28 @@ export default function CrearCurriculum() {
                 </div>
                 <div className="grid-2">
                   <Field
-                    label="Institución"
+                    label="Institution"
                     value={edu.institucion}
                     onChange={(e) => updateEducacion(edu.id, "institucion", e.target.value)}
-                    placeholder="Universidad Nacional"
+                    placeholder="State University"
                     maxLength={80}
                   />
                   <Field
-                    label="Título"
+                    label="Degree"
                     value={edu.titulo}
                     onChange={(e) => updateEducacion(edu.id, "titulo", e.target.value)}
-                    placeholder="Licenciatura en Administración"
+                    placeholder="Bachelor's in Business Administration"
                     maxLength={80}
                   />
                   <label className="field">
-                    <span className="field__label">Fecha inicio</span>
+                    <span className="field__label">Start date</span>
                     <MonthYearPicker
                       value={edu.inicio}
                       onChange={(v) => updateEducacion(edu.id, "inicio", v)}
                     />
                   </label>
                   <div className="field">
-                    <span className="field__label">Fecha fin</span>
+                    <span className="field__label">End date</span>
                     <MonthYearPicker
                       value={edu.fin}
                       onChange={(v) => updateEducacion(edu.id, "fin", v)}
@@ -570,18 +571,18 @@ export default function CrearCurriculum() {
                         checked={edu.actual}
                         onChange={(e) => updateEducacion(edu.id, "actual", e.target.checked)}
                       />
-                      Cursando actualmente
+                      Currently studying
                     </label>
                   </div>
                 </div>
               </div>
             ))}
             <button className="add-btn" onClick={addEducacion}>
-              <Plus size={15} /> Agregar otra institución
+              <Plus size={15} /> Add another institution
             </button>
           </Section>
 
-          <Section icon={<Sparkles size={15} />} title="Habilidades">
+          <Section icon={<Sparkles size={15} />} title="Skills">
             <div className="chips-input">
               {skills.map((s) => (
                 <span className="chip-tag" key={s}>
@@ -600,21 +601,21 @@ export default function CrearCurriculum() {
                 placeholder={skills.length ? "" : "Excel, Power BI, SAP..."}
               />
             </div>
-            <div className="field-hint">Escribe una habilidad y presiona Enter o coma.</div>
+            <div className="field-hint">Type a skill and press Enter or comma.</div>
           </Section>
 
-          <Section icon={<Languages size={15} />} title="Idiomas">
+          <Section icon={<Languages size={15} />} title="Languages">
             {idiomas.map((idi) => (
               <div className="idioma-row" key={idi.id}>
                 <Field
-                  label="Idioma"
+                  label="Language"
                   value={idi.idioma}
                   onChange={(e) => updateIdioma(idi.id, "idioma", e.target.value)}
-                  placeholder="Inglés"
+                  placeholder="Spanish"
                   maxLength={30}
                 />
                 <label className="field">
-                  <span className="field__label">Nivel</span>
+                  <span className="field__label">Level</span>
                   <select
                     className="field__select"
                     value={idi.nivel}
@@ -631,7 +632,7 @@ export default function CrearCurriculum() {
                   <button
                     className="icon-btn"
                     onClick={() => removeIdioma(idi.id)}
-                    aria-label="Eliminar idioma"
+                    aria-label="Remove language"
                   >
                     <Trash2 size={15} />
                   </button>
@@ -639,38 +640,38 @@ export default function CrearCurriculum() {
               </div>
             ))}
             <button className="add-btn" onClick={addIdioma}>
-              <Plus size={15} /> Agregar otro idioma
+              <Plus size={15} /> Add another language
             </button>
           </Section>
 
-          <Section icon={<Award size={15} />} title="Certificaciones (opcional)">
+          <Section icon={<Award size={15} />} title="Certifications (optional)">
             {certificaciones.map((c, i) => (
               <div className="idioma-row" key={c.id} style={{ gridTemplateColumns: "1fr auto" }}>
                 <Field
-                  label={`Certificación ${i + 1}`}
+                  label={`Certification ${i + 1}`}
                   value={c.texto}
                   onChange={(e) => updateCertificacion(c.id, e.target.value)}
-                  placeholder="Certificación en Excel Avanzado — Coursera, 2023"
+                  placeholder="Advanced Excel Certification — Coursera, 2023"
                   maxLength={120}
                 />
                 <button
                   className="icon-btn"
                   onClick={() => removeCertificacion(c.id)}
-                  aria-label="Eliminar certificación"
+                  aria-label="Remove certification"
                 >
                   <Trash2 size={15} />
                 </button>
               </div>
             ))}
             <button className="add-btn" onClick={addCertificacion}>
-              <Plus size={15} /> Agregar certificación
+              <Plus size={15} /> Add certification
             </button>
           </Section>
         </div>
 
         <div className={`preview-col ${mobileTab !== "preview" ? "hidden-mobile" : ""}`}>
           <div className="preview-toolbar">
-            <span className="preview-toolbar__label">Vista previa</span>
+            <span className="preview-toolbar__label">Preview</span>
             <div className="download-menu" ref={downloadMenuRef}>
               <button
                 className="download-btn"
@@ -678,7 +679,7 @@ export default function CrearCurriculum() {
                 disabled={downloading}
               >
                 {downloading ? <Loader2 size={15} className="spin" /> : <FileDown size={15} />}
-                {downloading ? "Generando..." : "Descargar currículum"}
+                {downloading ? "Generating..." : "Download resume"}
                 <ChevronDown size={14} className={downloadMenuOpen ? "rotate-180" : ""} style={{ transition: "transform 0.15s ease" }} />
               </button>
               {downloadMenuOpen && (
@@ -687,21 +688,21 @@ export default function CrearCurriculum() {
                     <FileDown size={16} />
                     <span>
                       <strong>PDF</strong>
-                      <small>Listo para enviar, tal como se ve</small>
+                      <small>Ready to send, exactly as shown</small>
                     </span>
                   </button>
                   <button className="download-menu__item" onClick={handleDownloadDocx}>
                     <FileText size={16} />
                     <span>
                       <strong>Word</strong>
-                      <small>Para editar, agregar foto o retocar</small>
+                      <small>To edit, add a photo, or tweak by hand</small>
                     </span>
                   </button>
                 </div>
               )}
             </div>
           </div>
-          <CVPreview data={data} innerRef={previewRef} />
+          <CVPreview data={data} innerRef={previewRef} locale="en" />
         </div>
       </div>
     </div>
